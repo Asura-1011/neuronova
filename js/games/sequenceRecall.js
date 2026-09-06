@@ -1,6 +1,6 @@
 /**
  * Game 2: Sequence Recall (Simon Says Style)
- * Dementia Patient Cognitive Training
+ * Level difficulty scaling via GameDifficultyService
  */
 
 const SequenceRecallGame = {
@@ -10,6 +10,7 @@ const SequenceRecallGame = {
   score: 0,
   roundsCompleted: 0,
   maxRounds: 3,
+  flashSpeedMs: 900,
   isPlayingSequence: false,
   startTime: null,
   onCompleteCallback: null,
@@ -22,7 +23,12 @@ const SequenceRecallGame = {
     this.roundsCompleted = 0;
     this.startTime = Date.now();
 
-    VoiceAssistant.speak("Sequence Recall. Watch the colored pads light up, then repeat the sequence!");
+    const patient = AdaptiveEngine.getPatient();
+    const diff = GameDifficultyService.getDifficultyForGame('game2', patient.level);
+    this.maxRounds = diff.maxRounds || 3;
+    this.flashSpeedMs = diff.flashSpeedMs || 900;
+
+    VoiceAssistant.speak("Sequence Recall. Watch the colored pads light up, then repeat the sequence!", "game_start");
 
     container.innerHTML = `
       <div class="game-container">
@@ -30,7 +36,7 @@ const SequenceRecallGame = {
           <button class="back-btn" onclick="GameMenu.render(document.getElementById('app'))">← Exit</button>
           <div class="game-stat">
             <span class="game-stat-label">Round</span>
-            <span class="game-stat-value" id="seq-round">1 / 3</span>
+            <span class="game-stat-value" id="seq-round">1 / ${this.maxRounds}</span>
           </div>
           <div class="game-stat">
             <span class="game-stat-label">Score</span>
@@ -57,7 +63,6 @@ const SequenceRecallGame = {
 
   startNextRound() {
     this.userStep = 0;
-    // Add one random color to sequence
     const nextColor = this.colors[Math.floor(Math.random() * this.colors.length)];
     this.sequence.push(nextColor);
 
@@ -83,7 +88,7 @@ const SequenceRecallGame = {
 
       this.flashPad(this.sequence[i]);
       i++;
-    }, 900);
+    }, this.flashSpeedMs);
   },
 
   flashPad(color) {
@@ -92,7 +97,7 @@ const SequenceRecallGame = {
       pad.classList.add('active');
       setTimeout(() => {
         pad.classList.remove('active');
-      }, 500);
+      }, Math.round(this.flashSpeedMs * 0.6));
     }
   },
 
@@ -105,11 +110,10 @@ const SequenceRecallGame = {
       this.userStep++;
 
       if (this.userStep === this.sequence.length) {
-        // Round completed successfully!
         this.roundsCompleted++;
         this.score += 60;
         document.getElementById('seq-score').innerText = this.score;
-        document.getElementById('seq-round').innerText = `${Math.min(3, this.roundsCompleted + 1)} / 3`;
+        document.getElementById('seq-round').innerText = `${Math.min(this.maxRounds, this.roundsCompleted + 1)} / ${this.maxRounds}`;
 
         if (this.roundsCompleted >= this.maxRounds) {
           this.finishGame(100);
@@ -119,15 +123,14 @@ const SequenceRecallGame = {
         }
       }
     } else {
-      // Wrong pad clicked!
-      VoiceAssistant.speak("Oops! That was not the right color. Good try!");
+      VoiceAssistant.speak("Oops! That was not the right color. Good try!", "mistake");
       this.finishGame(70);
     }
   },
 
   finishGame(accuracy) {
     const timeTaken = Math.round((Date.now() - this.startTime) / 1000);
-    VoiceAssistant.speak("Great job on Sequence Recall!");
+    VoiceAssistant.speak("Great job on Sequence Recall!", "success");
 
     setTimeout(() => {
       if (this.onCompleteCallback) {
