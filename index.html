@@ -2,9 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>NeuroNova - Dementia Memory Care & Cognitive Training</title>
   
+  <!-- PWA Manifest & Android Installability -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#121826">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NeuroNova">
+
   <!-- Google Fonts: Outfit for bold headings, Inter for clear readable body text -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +25,7 @@
     <!-- Dynamic view loaded here via JS -->
   </div>
 
-  <!-- Level Up Celebration Modal -->
+  <!-- Level Up & Session Evaluation Celebration Modal -->
   <div id="level-up-modal" class="modal-overlay hidden">
     <div class="modal-card celebration-card">
       <div class="confetti-icon">🎉 🌟 🎉</div>
@@ -31,24 +38,38 @@
     </div>
   </div>
 
-  <!-- Application Modules -->
+  <!-- Application Engine & Data Services -->
+  <script src="js/engine/patientDataService.js"></script>
+  <script src="js/engine/caregiverAuthService.js"></script>
+  <script src="js/engine/baselineService.js"></script>
+  <script src="js/engine/levelService.js"></script>
+  <script src="js/engine/gameDifficultyService.js"></script>
+  <script src="js/engine/voiceService.js"></script>
   <script src="js/engine/voiceAssistant.js"></script>
   <script src="js/engine/adaptiveEngine.js"></script>
+
+  <!-- Games -->
   <script src="js/games/memoryMatch.js"></script>
   <script src="js/games/sequenceRecall.js"></script>
   <script src="js/games/pictureRecall.js"></script>
   <script src="js/games/patternMemory.js"></script>
   <script src="js/games/whatChanged.js"></script>
+
+  <!-- Patient Views -->
   <script src="js/patient/patientDashboard.js"></script>
   <script src="js/patient/gameMenu.js"></script>
   <script src="js/patient/memoriesView.js"></script>
   <script src="js/patient/remindersView.js"></script>
   <script src="js/patient/routineView.js"></script>
+
+  <!-- Caregiver Views -->
   <script src="js/caregiver/chartRenderer.js"></script>
   <script src="js/caregiver/caregiverDashboard.js"></script>
   <script src="js/caregiver/memoryManager.js"></script>
   <script src="js/caregiver/reminderManager.js"></script>
   <script src="js/caregiver/settingsManager.js"></script>
+
+  <!-- App Entry Point -->
   <script src="js/app.js"></script>
 </body>
 </html>
