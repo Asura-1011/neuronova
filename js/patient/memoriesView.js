@@ -47,3 +47,4 @@ const MemoriesView = {
     VoiceAssistant.speak(text);
   }
 };
+
