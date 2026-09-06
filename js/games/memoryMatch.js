@@ -1,17 +1,18 @@
 /**
  * Game 1: Memory Match
  * Dementia Patient Cognitive Training
+ * Level difficulty scaling via GameDifficultyService
  */
 
 const MemoryMatchGame = {
-  icons: ['🌸', '🍎', '🐱', '⭐', '🎈', '🌻', '🎁', '🍓'],
+  icons: ['🌸', '🍎', '🐱', '⭐', '🎈', '🌻', '🎁', '🍓', '🐶', '🚗', '👑', '🌈'],
   cards: [],
   flippedCards: [],
   matchedPairs: 0,
+  targetPairs: 4,
   score: 0,
   moves: 0,
   startTime: null,
-  timerInterval: null,
   onCompleteCallback: null,
 
   render(container, onComplete) {
@@ -22,8 +23,11 @@ const MemoryMatchGame = {
     this.flippedCards = [];
     this.startTime = Date.now();
 
-    // Prepare 4 pairs (8 cards total for elderly accessibility)
-    const activeIcons = this.icons.slice(0, 4);
+    const patient = AdaptiveEngine.getPatient();
+    const difficulty = GameDifficultyService.getDifficultyForGame('game1', patient.level);
+    this.targetPairs = difficulty.pairsCount || 4;
+
+    const activeIcons = this.icons.slice(0, this.targetPairs);
     const deck = [...activeIcons, ...activeIcons];
     deck.sort(() => Math.random() - 0.5);
 
@@ -34,15 +38,15 @@ const MemoryMatchGame = {
       matched: false
     }));
 
-    VoiceAssistant.speak("Memory Match. Tap two cards to find matching pairs!");
+    VoiceAssistant.speak("Memory Match. Tap two cards to find matching pairs!", "game_start");
 
     container.innerHTML = `
       <div class="game-container">
         <div class="game-header-bar">
           <button class="back-btn" onclick="GameMenu.render(document.getElementById('app'))">← Exit</button>
           <div class="game-stat">
-            <span class="game-stat-label">Pairs Found</span>
-            <span class="game-stat-value" id="mm-pairs">0 / 4</span>
+            <span class="game-stat-label">Level ${patient.level}</span>
+            <span class="game-stat-value" id="mm-pairs">0 / ${this.targetPairs}</span>
           </div>
           <div class="game-stat">
             <span class="game-stat-label">Score</span>
@@ -51,11 +55,11 @@ const MemoryMatchGame = {
         </div>
 
         <div class="game-instruction-banner">
-          <span>Match all pairs of identical items!</span>
-          <button class="speak-btn" onclick="VoiceAssistant.speak('Match all pairs of identical items!')">🔊</button>
+          <span>Find all ${this.targetPairs} matching pairs of items!</span>
+          <button class="speak-btn" onclick="VoiceAssistant.speak('Find all matching pairs of items.')">🔊</button>
         </div>
 
-        <div class="memory-grid" id="mm-grid">
+        <div class="memory-grid" id="mm-grid" style="grid-template-columns: repeat(${this.targetPairs > 4 ? 4 : 4}, 1fr);">
           ${this.cards.map(c => `
             <div class="memory-card" id="card-${c.id}" onclick="MemoryMatchGame.handleCardClick(${c.id})">
               ❓
@@ -70,7 +74,6 @@ const MemoryMatchGame = {
     const card = this.cards.find(c => c.id === cardId);
     if (!card || card.flipped || card.matched || this.flippedCards.length >= 2) return;
 
-    // Flip card
     card.flipped = true;
     this.flippedCards.push(card);
     
@@ -90,29 +93,27 @@ const MemoryMatchGame = {
     const [card1, card2] = this.flippedCards;
     
     if (card1.icon === card2.icon) {
-      // Match found!
       card1.matched = true;
       card2.matched = true;
       this.matchedPairs += 1;
       this.score += 50;
 
-      VoiceAssistant.speak("Great match!");
+      VoiceAssistant.speak("Great match!", "general");
 
       const el1 = document.getElementById(`card-${card1.id}`);
       const el2 = document.getElementById(`card-${card2.id}`);
       if (el1) el1.classList.add('matched');
       if (el2) el2.classList.add('matched');
 
-      document.getElementById('mm-pairs').innerText = `${this.matchedPairs} / 4`;
+      document.getElementById('mm-pairs').innerText = `${this.matchedPairs} / ${this.targetPairs}`;
       document.getElementById('mm-score').innerText = this.score;
 
       this.flippedCards = [];
 
-      if (this.matchedPairs === 4) {
+      if (this.matchedPairs === this.targetPairs) {
         this.finishGame();
       }
     } else {
-      // Not a match - flip back after delay
       setTimeout(() => {
         card1.flipped = false;
         card2.flipped = false;
@@ -135,10 +136,9 @@ const MemoryMatchGame = {
 
   finishGame() {
     const timeTaken = Math.round((Date.now() - this.startTime) / 1000);
-    // Accuracy calculation based on moves vs ideal 4 moves
-    const accuracy = Math.max(50, Math.min(100, Math.round((4 / this.moves) * 100)));
+    const accuracy = Math.max(50, Math.min(100, Math.round((this.targetPairs / this.moves) * 100)));
 
-    VoiceAssistant.speak("Wonderful job! You completed Memory Match!");
+    VoiceAssistant.speak("Wonderful job! You completed Memory Match!", "success");
 
     setTimeout(() => {
       if (this.onCompleteCallback) {
