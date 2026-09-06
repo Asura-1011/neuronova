@@ -1,12 +1,14 @@
 /**
  * Daily Sequential Game Menu Component
  * Ensures games unlock sequentially (Game 1 -> Game 2 -> Game 3 -> Game 4 -> Game 5)
+ * Displays Baseline Assessment status & end-of-session Level evaluation modals
  */
 
 const GameMenu = {
-  render(container) {
+  async render(container) {
     const gamesState = AdaptiveEngine.getGamesState();
     const patient = AdaptiveEngine.getPatient();
+    const baselineStatusText = BaselineService.getBaselineStatusText(patient);
 
     VoiceAssistant.speak("Daily Games Menu. Select your unlocked game to begin training!");
 
@@ -20,12 +22,16 @@ const GameMenu = {
           <h2>Daily Memory Training 🎮</h2>
         </div>
 
-        <div style="background:var(--bg-card); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
-          <div>
-            <div style="font-weight:700; font-size:1.1rem;">Current Level: Level ${patient.level} 🌟</div>
-            <div style="font-size:0.9rem; color:var(--text-secondary);">Complete games sequentially to level up!</div>
+        <div style="background:var(--bg-card); padding:16px; border-radius:var(--radius-sm); border:1px solid var(--border-glow); display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-weight:800; font-size:1.15rem; color:var(--text-primary);">Current Level: Level ${patient.level} 🌟</div>
+            <span class="status-badge unlocked" style="font-size:0.75rem;">${baselineStatusText}</span>
           </div>
-          <button class="btn btn-secondary" style="padding:8px 14px; font-size:0.85rem;" onclick="GameMenu.resetDaily()">Reset Day 🔄</button>
+          <div style="font-size:0.9rem; color:var(--text-secondary);">
+            ${patient.baselineStatus && patient.baselineStatus.isCompleted 
+              ? 'Complete daily games to improve beyond your personal baseline!' 
+              : 'Complete Days 1 to 3 to establish your personal performance baseline.'}
+          </div>
         </div>
 
         <div class="game-list">
@@ -61,13 +67,19 @@ const GameMenu = {
     `;
   },
 
-  launchGame(gameId) {
+  async launchGame(gameId) {
     const container = document.getElementById('app');
-    const onComplete = (gId, score, accuracy, timeTaken) => {
-      const result = AdaptiveEngine.recordGameCompletion(gId, score, accuracy, timeTaken);
+    const onComplete = async (gId, score, accuracy, timeTaken) => {
+      const result = await AdaptiveEngine.recordGameCompletion(gId, score, accuracy, timeTaken);
 
-      if (result.promoted) {
-        GameMenu.showLevelUpModal(result.newLevel, score, accuracy);
+      // 1. Check if Baseline completed message should be shown
+      if (result.baselineResult && result.baselineResult.baselineJustFinished) {
+        alert('🎉 Baseline Complete!\n\nYour 3-day personal baseline assessment has been successfully established!');
+      }
+
+      // 2. Check if Level Evaluation occurred
+      if (result.levelResult) {
+        GameMenu.showSessionEvaluationModal(result.levelResult);
       } else {
         GameMenu.render(container);
       }
@@ -94,23 +106,24 @@ const GameMenu = {
     }
   },
 
-  showLevelUpModal(newLevel, score, accuracy) {
+  showSessionEvaluationModal(evalResult) {
     const modal = document.getElementById('level-up-modal');
     const title = document.getElementById('modal-title');
     const desc = document.getElementById('modal-desc');
     const stats = document.getElementById('modal-stats-container');
     const closeBtn = document.getElementById('modal-close-btn');
 
-    if (title) title.innerText = `🎉 Congratulations! Level ${newLevel} Unlocked! 🎉`;
-    if (desc) desc.innerText = `Outstanding performance! You scored ${score} points with ${accuracy}% accuracy!`;
+    if (title) title.innerText = evalResult.title || (evalResult.promoted ? '🎉 Level Up!' : '🌟 Great Practice!');
+    if (desc) desc.innerText = evalResult.message;
+    
     if (stats) {
       stats.innerHTML = `
-        <div class="modal-stat-pill">Accuracy: ${accuracy}%</div>
-        <div class="modal-stat-pill">Level: ${newLevel}</div>
+        <div class="modal-stat-pill">Accuracy: ${evalResult.dailyAccuracy || 80}%</div>
+        <div class="modal-stat-pill">Level: ${evalResult.newLevel || evalResult.currentLevel || 1}</div>
       `;
     }
 
-    VoiceAssistant.speak(`Congratulations! You have reached Level ${newLevel}!`);
+    VoiceAssistant.speak(evalResult.message, evalResult.promoted ? 'success' : 'general');
 
     if (modal) modal.classList.remove('hidden');
 
@@ -120,10 +133,5 @@ const GameMenu = {
         GameMenu.render(document.getElementById('app'));
       };
     }
-  },
-
-  resetDaily() {
-    AdaptiveEngine.resetDailyProgress();
-    this.render(document.getElementById('app'));
   }
 };
