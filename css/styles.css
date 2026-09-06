@@ -135,6 +135,18 @@ body {
   border-color: var(--accent-purple);
 }
 
+.btn-danger {
+  background-color: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+  border: 2px solid #ef4444;
+}
+
+.btn-danger:hover, .btn-danger:active {
+  background-color: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
 .btn-huge {
   min-height: 72px;
   padding: 24px 32px;
