@@ -1,6 +1,7 @@
 /**
  * NeuroNova PatientDataService Layer (Parts 2, 3, 4, 7, 8, 9, 12)
  * Modular data service providing strict patient data isolation by unique patient ID.
+ * Includes safe patient profile deletion via deletePatient(patientId).
  * 
  * PROTOTYPE PERSISTENCE NOTICE:
  * This service uses browser localStorage for prototype demonstration purposes.
@@ -124,7 +125,6 @@ const PatientDataService = {
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        // Deduplicate patients by patientId
         this.patients = {};
         Object.values(parsed).forEach(p => {
           if (p && p.patientId) {
@@ -146,8 +146,11 @@ const PatientDataService = {
     if (savedActiveId && this.patients[savedActiveId]) {
       this.activePatientId = savedActiveId;
     } else {
-      this.activePatientId = Object.keys(this.patients)[0];
-      localStorage.setItem(ACTIVE_PATIENT_KEY, this.activePatientId);
+      const ids = Object.keys(this.patients);
+      this.activePatientId = ids.length > 0 ? ids[0] : null;
+      if (this.activePatientId) {
+        localStorage.setItem(ACTIVE_PATIENT_KEY, this.activePatientId);
+      }
     }
   },
 
@@ -155,11 +158,12 @@ const PatientDataService = {
     localStorage.setItem(PATIENTS_STORAGE_KEY, JSON.stringify(this.patients));
     if (this.activePatientId) {
       localStorage.setItem(ACTIVE_PATIENT_KEY, this.activePatientId);
+    } else {
+      localStorage.removeItem(ACTIVE_PATIENT_KEY);
     }
   },
 
   async getAllPatients() {
-    // Return unique patient objects list
     const patientMap = new Map();
     Object.values(this.patients).forEach(p => {
       if (p && p.patientId && !patientMap.has(p.patientId)) {
@@ -171,8 +175,13 @@ const PatientDataService = {
 
   async getActivePatient() {
     if (!this.activePatientId || !this.patients[this.activePatientId]) {
-      this.activePatientId = Object.keys(this.patients)[0];
-      this.save();
+      const ids = Object.keys(this.patients);
+      if (ids.length > 0) {
+        this.activePatientId = ids[0];
+        this.save();
+      } else {
+        return null;
+      }
     }
     return this.patients[this.activePatientId];
   },
@@ -182,7 +191,6 @@ const PatientDataService = {
       throw new Error(`Patient ID "${patientId}" not found.`);
     }
 
-    // Save active patient data before switching
     this.save();
 
     this.activePatientId = patientId;
@@ -253,6 +261,40 @@ const PatientDataService = {
     };
     this.save();
     return this.patients[this.activePatientId];
+  },
+
+  /**
+   * Permanently deletes a patient profile and all associated data by unique patientId.
+   */
+  async deletePatient(patientId) {
+    if (!patientId || !this.patients[patientId]) {
+      return { success: false, message: 'Patient profile not found.' };
+    }
+
+    const patientName = this.patients[patientId].patientName;
+
+    // Delete patient entry using unique patientId
+    delete this.patients[patientId];
+
+    // If deleted patient was active, select another remaining patient or clear active ID
+    if (this.activePatientId === patientId) {
+      const remainingIds = Object.keys(this.patients);
+      if (remainingIds.length > 0) {
+        this.activePatientId = remainingIds[0];
+      } else {
+        this.activePatientId = null;
+        localStorage.removeItem(ACTIVE_PATIENT_KEY);
+      }
+    }
+
+    this.save();
+
+    return {
+      success: true,
+      patientId,
+      patientName,
+      remainingCount: Object.keys(this.patients).length
+    };
   }
 };
 
