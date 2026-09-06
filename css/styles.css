@@ -1,14 +1,14 @@
 /* ==========================================================================
-   NEURONOVA - DESIGN SYSTEM & ACCESSIBLE STYLING
-   Optimized for PC & Android/Mobile screens with high contrast & touch targets
+   NEURONOVA - MOBILE-FIRST & ELDERLY-ACCESSIBLE DESIGN SYSTEM
+   Optimized for Android phones, tablets, and desktop displays.
    ========================================================================== */
 
 :root {
-  /* Color Palette - Vibrant Dark Mode */
+  /* Color Palette - Accessible Dark Mode */
   --bg-primary: #121826;
   --bg-card: #1e293b;
   --bg-card-hover: #334155;
-  --bg-glass: rgba(30, 41, 59, 0.85);
+  --bg-glass: rgba(30, 41, 59, 0.9);
   
   --accent-purple: #8b5cf6;
   --accent-purple-hover: #7c3aed;
@@ -21,12 +21,12 @@
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   
-  --border-color: rgba(255, 255, 255, 0.1);
+  --border-color: rgba(255, 255, 255, 0.12);
   --border-glow: rgba(139, 92, 246, 0.4);
   
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-  --shadow-glow: 0 0 25px rgba(139, 92, 246, 0.3);
+  --shadow-glow: 0 0 25px rgba(139, 92, 246, 0.35);
 
   --radius-sm: 12px;
   --radius-md: 18px;
@@ -37,7 +37,7 @@
   --font-body: 'Inter', sans-serif;
 }
 
-/* High Contrast Accessibility Mode for Elderly */
+/* High Contrast Mode for Visual Accessibility */
 body.high-contrast {
   --bg-primary: #000000;
   --bg-card: #1c1c1e;
@@ -56,6 +56,12 @@ body.high-contrast {
   -webkit-tap-highlight-color: transparent;
 }
 
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--bg-primary);
@@ -64,35 +70,36 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 16px;
-  overflow-x: hidden;
+  padding: 12px;
 }
 
+/* App Container - Mobile First Layout */
 .app-container {
   width: 100%;
-  max-width: 600px; /* Mobile first feel, expand for PC */
+  max-width: 540px; /* Mobile optimal width */
   margin: 0 auto;
-  min-height: calc(100vh - 32px);
+  min-height: calc(100vh - 24px);
   display: flex;
   flex-direction: column;
 }
 
 @media (min-width: 768px) {
   .app-container {
-    max-width: 900px;
-    padding: 12px;
+    max-width: 840px;
+    padding: 16px;
   }
   .app-container.caregiver-mode {
-    max-width: 1100px;
+    max-width: 1060px;
   }
 }
 
-/* Base Buttons & Touch Targets (Min 56px height for accessibility) */
+/* Large Accessible Touch Targets (Min 56px height for elderly tap target) */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
+  min-height: 56px;
   padding: 16px 24px;
   font-family: var(--font-heading);
   font-size: 1.15rem;
@@ -103,6 +110,7 @@ body {
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   user-select: none;
+  touch-action: manipulation;
 }
 
 .btn-primary {
@@ -119,7 +127,7 @@ body {
 .btn-secondary {
   background-color: var(--bg-card);
   color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--border-color);
 }
 
 .btn-secondary:hover, .btn-secondary:active {
@@ -128,19 +136,21 @@ body {
 }
 
 .btn-huge {
+  min-height: 72px;
   padding: 24px 32px;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   border-radius: var(--radius-lg);
   width: 100%;
 }
 
 .btn-large {
+  min-height: 60px;
   padding: 18px 28px;
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   width: 100%;
 }
 
-/* Headings & Typography */
+/* Typography */
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
   font-weight: 800;
@@ -148,21 +158,21 @@ h1, h2, h3, h4 {
 }
 
 /* ==========================================================================
-   LANDING / PORTAL SELECTOR SCREEN
+   LANDING & PORTAL SELECTOR
    ========================================================================== */
 .portal-selector-card {
   background: var(--bg-glass);
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--border-glow);
   border-radius: var(--radius-lg);
-  padding: 32px 24px;
+  padding: 28px 20px;
   text-align: center;
   box-shadow: var(--shadow-md);
-  backdrop-filter: blur(12px);
   margin: auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
+  width: 100%;
 }
 
 .brand-header {
@@ -181,8 +191,8 @@ h1, h2, h3, h4 {
 
 .portal-tagline {
   color: var(--text-secondary);
-  font-size: 1.1rem;
-  max-width: 400px;
+  font-size: 1.05rem;
+  max-width: 440px;
   line-height: 1.5;
 }
 
@@ -190,8 +200,8 @@ h1, h2, h3, h4 {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin: 8px 0;
+  gap: 14px;
+  margin: 4px 0;
 }
 
 .form-group {
@@ -204,18 +214,19 @@ h1, h2, h3, h4 {
 
 .form-group label {
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-secondary);
 }
 
 .form-input {
   width: 100%;
-  padding: 16px 20px;
+  min-height: 52px;
+  padding: 14px 18px;
   border-radius: var(--radius-sm);
   background-color: var(--bg-primary);
   border: 2px solid var(--border-color);
   color: var(--text-primary);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-family: var(--font-body);
   outline: none;
   transition: border-color 0.2s ease;
@@ -223,10 +234,10 @@ h1, h2, h3, h4 {
 
 .form-input:focus {
   border-color: var(--accent-purple);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
 }
 
-/* Patient Big Button (Top Prominent) */
+/* Patient Launch Button (Prominent Gaming Icon) */
 .patient-launch-btn {
   background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 50%, #3b82f6 100%);
   background-size: 200% 200%;
@@ -236,8 +247,8 @@ h1, h2, h3, h4 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 28px 20px;
+  gap: 6px;
+  padding: 24px 20px;
   border-radius: var(--radius-lg);
   border: 3px solid rgba(255, 255, 255, 0.3);
 }
@@ -249,54 +260,39 @@ h1, h2, h3, h4 {
 }
 
 .patient-launch-btn .icon-badge {
-  font-size: 3rem;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+  font-size: 2.8rem;
 }
 
 .patient-launch-btn .btn-text-main {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   font-weight: 900;
 }
 
 .patient-launch-btn .btn-sub {
-  font-size: 0.95rem;
-  font-weight: 500;
+  font-size: 0.9rem;
   opacity: 0.9;
 }
 
-/* Caregiver Button Below */
 .caregiver-launch-btn {
   background-color: var(--bg-card);
   color: var(--text-primary);
   border: 2px solid var(--border-color);
-  padding: 18px 20px;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  border-radius: var(--radius-md);
-  font-size: 1.15rem;
-}
-
-.caregiver-launch-btn:hover {
-  background-color: var(--bg-card-hover);
-  border-color: var(--accent-purple);
 }
 
 /* ==========================================================================
-   ELDERLY PATIENT DASHBOARD (Matching User Mockup 1)
+   PATIENT DASHBOARD (Matching Mockup 1)
    ========================================================================== */
 .patient-dashboard {
   background: var(--bg-glass);
   border: 2px solid var(--border-glow);
   border-radius: var(--radius-lg);
-  padding: 24px 20px;
+  padding: 20px 16px;
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  min-height: calc(100vh - 32px);
+  gap: 18px;
+  min-height: calc(100vh - 24px);
 }
 
 .top-bar {
@@ -311,37 +307,34 @@ h1, h2, h3, h4 {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 800;
 }
 
 .top-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .icon-btn {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.icon-btn:active, .icon-btn:hover {
+.icon-btn:active {
   background: var(--accent-purple);
-  transform: scale(1.08);
 }
 
-/* Greeting Section */
 .greeting-section {
   display: flex;
   flex-direction: column;
@@ -349,24 +342,23 @@ h1, h2, h3, h4 {
 }
 
 .greeting-title {
-  font-size: 1.8rem;
-  color: var(--text-primary);
+  font-size: 1.7rem;
 }
 
 .greeting-subtitle {
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--text-secondary);
 }
 
-/* 4 Main Action Grid Cards (Matching Mockup 1) */
+/* 4 Main Action Cards Grid */
 .patient-action-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin: 8px 0;
+  gap: 14px;
+  margin: 4px 0;
 }
 
-@media (max-width: 440px) {
+@media (max-width: 380px) {
   .patient-action-grid {
     grid-template-columns: 1fr;
   }
@@ -376,82 +368,75 @@ h1, h2, h3, h4 {
   background-color: var(--bg-card);
   border: 2px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 24px 16px;
+  padding: 22px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: var(--shadow-sm);
-  text-align: center;
-  user-select: none;
+  min-height: 120px;
 }
 
 .action-card:hover, .action-card:active {
   background-color: var(--bg-card-hover);
   border-color: var(--accent-purple);
-  transform: translateY(-4px);
   box-shadow: var(--shadow-glow);
 }
 
 .action-card-icon {
-  font-size: 2.8rem;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+  font-size: 2.6rem;
 }
 
 .action-card-title {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  color: var(--text-primary);
 }
 
-/* Today's Progress Card (Bottom Mockup 1) */
 .today-progress-card {
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(236, 72, 153, 0.15));
   border: 2px dashed var(--accent-purple);
   border-radius: var(--radius-md);
-  padding: 18px 20px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .progress-info {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.2rem;
-  font-weight: 700;
+  gap: 10px;
+  font-size: 1.1rem;
 }
 
 .star-badge {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 .progress-stars {
   display: flex;
-  gap: 6px;
-  font-size: 1.4rem;
+  gap: 4px;
+  font-size: 1.3rem;
 }
 
 /* ==========================================================================
-   DAILY GAME MENU (Sequential Unlock System)
+   DAILY SEQUENTIAL GAME MENU
    ========================================================================== */
 .view-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 10px;
+  margin-bottom: 12px;
 }
 
 .back-btn {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  padding: 10px 16px;
+  padding: 8px 14px;
   border-radius: var(--radius-sm);
   font-weight: 700;
   cursor: pointer;
@@ -460,71 +445,62 @@ h1, h2, h3, h4 {
 .game-list {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .game-item-card {
   background-color: var(--bg-card);
   border: 2px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 20px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  transition: all 0.2s ease;
+  gap: 12px;
 }
 
 .game-item-card.unlocked {
   border-color: var(--accent-purple);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
   cursor: pointer;
-}
-
-.game-item-card.unlocked:hover {
-  transform: translateX(4px);
-  background-color: var(--bg-card-hover);
 }
 
 .game-item-card.completed {
   border-color: var(--accent-green);
-  opacity: 0.85;
+  opacity: 0.9;
   background-color: rgba(16, 185, 129, 0.08);
 }
 
 .game-item-card.locked {
   opacity: 0.5;
   cursor: not-allowed;
-  filter: grayscale(0.6);
 }
 
 .game-item-info {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .game-item-icon {
-  font-size: 2.4rem;
+  font-size: 2.2rem;
 }
 
 .game-item-details h3 {
-  font-size: 1.25rem;
-  margin-bottom: 4px;
+  font-size: 1.15rem;
+  margin-bottom: 2px;
 }
 
 .game-item-details p {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--text-secondary);
 }
 
 .status-badge {
-  padding: 8px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-full);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
 }
 
 .status-badge.unlocked {
@@ -540,7 +516,6 @@ h1, h2, h3, h4 {
 .status-badge.locked {
   background-color: var(--bg-primary);
   color: var(--text-muted);
-  border: 1px solid var(--border-color);
 }
 
 /* ==========================================================================
@@ -550,10 +525,10 @@ h1, h2, h3, h4 {
   background-color: var(--bg-card);
   border: 2px solid var(--border-glow);
   border-radius: var(--radius-md);
-  padding: 24px 20px;
+  padding: 18px 14px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
   box-shadow: var(--shadow-md);
 }
 
@@ -562,7 +537,7 @@ h1, h2, h3, h4 {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 12px;
+  padding-bottom: 10px;
 }
 
 .game-stat {
@@ -578,7 +553,7 @@ h1, h2, h3, h4 {
 }
 
 .game-stat-value {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--accent-amber);
 }
@@ -586,13 +561,13 @@ h1, h2, h3, h4 {
 .game-instruction-banner {
   background-color: var(--bg-primary);
   border-left: 4px solid var(--accent-purple);
-  padding: 16px;
+  padding: 14px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  font-size: 1.1rem;
+  gap: 10px;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -607,22 +582,15 @@ h1, h2, h3, h4 {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 1.1rem;
   flex-shrink: 0;
 }
 
-/* Game 1: Memory Match Cards */
+/* Game Cards & Grids */
 .memory-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin: 12px 0;
-}
-
-@media (max-width: 480px) {
-  .memory-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  gap: 10px;
+  margin: 8px 0;
 }
 
 .memory-card {
@@ -633,41 +601,35 @@ h1, h2, h3, h4 {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
+  font-size: 2rem;
   cursor: pointer;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
 }
 
 .memory-card.flipped {
   background-color: var(--bg-card-hover);
   border-color: var(--accent-purple);
-  transform: rotateY(180deg);
 }
 
 .memory-card.matched {
   background-color: rgba(16, 185, 129, 0.2);
   border-color: var(--accent-green);
-  opacity: 0.9;
-  cursor: default;
 }
 
-/* Game 2: Sequence Recall */
 .sequence-pad-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  max-width: 360px;
-  margin: 16px auto;
+  gap: 14px;
+  max-width: 320px;
+  margin: 12px auto;
   width: 100%;
 }
 
 .seq-pad {
-  height: 120px;
+  height: 110px;
   border-radius: var(--radius-md);
   border: 3px solid transparent;
   cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -679,65 +641,54 @@ h1, h2, h3, h4 {
   opacity: 1;
   filter: brightness(1.4);
   transform: scale(1.05);
-  box-shadow: 0 0 25px currentColor;
 }
 
-.seq-red { background-color: #ef4444; color: #ef4444; }
-.seq-blue { background-color: #3b82f6; color: #3b82f6; }
-.seq-green { background-color: #10b981; color: #10b981; }
-.seq-yellow { background-color: #f59e0b; color: #f59e0b; }
+.seq-red { background-color: #ef4444; }
+.seq-blue { background-color: #3b82f6; }
+.seq-green { background-color: #10b981; }
+.seq-yellow { background-color: #f59e0b; }
 
-/* Game 3: Picture Recall */
 .picture-display-area {
   display: flex;
   justify-content: center;
-  gap: 16px;
-  margin: 20px 0;
-  min-height: 120px;
+  gap: 12px;
+  margin: 16px 0;
+  min-height: 100px;
 }
 
 .picture-card-item {
   background: var(--bg-primary);
   border: 2px solid var(--border-color);
   border-radius: var(--radius-md);
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
-  box-shadow: var(--shadow-sm);
+  font-size: 2.6rem;
 }
 
 .picture-choice-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-top: 12px;
+  gap: 10px;
 }
 
 .choice-btn {
   background: var(--bg-primary);
   border: 2px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 16px;
-  font-size: 2.2rem;
+  padding: 14px;
+  font-size: 2rem;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.choice-btn:hover {
-  border-color: var(--accent-purple);
-  background: var(--bg-card-hover);
-}
-
-/* Game 4: Pattern Memory */
 .pattern-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  max-width: 320px;
-  margin: 16px auto;
+  gap: 10px;
+  max-width: 300px;
+  margin: 12px auto;
 }
 
 .pattern-tile {
@@ -746,7 +697,6 @@ h1, h2, h3, h4 {
   border: 2px solid var(--border-color);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .pattern-tile.highlighted {
@@ -756,16 +706,14 @@ h1, h2, h3, h4 {
 
 .pattern-tile.selected {
   background-color: var(--accent-purple);
-  border-color: #fff;
 }
 
-/* Game 5: What Changed? */
 .scene-container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  max-width: 360px;
-  margin: 16px auto;
+  gap: 10px;
+  max-width: 320px;
+  margin: 12px auto;
 }
 
 .scene-item {
@@ -776,57 +724,41 @@ h1, h2, h3, h4 {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.scene-item:hover {
-  border-color: var(--accent-purple);
-  transform: scale(1.05);
 }
 
 /* ==========================================================================
-   FAMILY MEMORIES TREE & REMINDERS (Elderly Patient Views)
+   FAMILY TREE & REMINDERS
    ========================================================================== */
 .family-tree-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-  margin-top: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
 }
 
 .family-card {
   background-color: var(--bg-card);
   border: 2px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 16px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
-  transition: all 0.25s ease;
-  box-shadow: var(--shadow-sm);
-}
-
-.family-card:hover, .family-card:active {
-  border-color: var(--accent-pink);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.3);
 }
 
 .family-avatar {
-  width: 100px;
-  height: 100px;
+  width: 86px;
+  height: 86px;
   border-radius: 50%;
-  object-fit: cover;
   border: 3px solid var(--accent-pink);
   background-color: var(--bg-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3rem;
+  font-size: 2.5rem;
   overflow: hidden;
 }
 
@@ -836,77 +768,60 @@ h1, h2, h3, h4 {
   object-fit: cover;
 }
 
-.family-info {
-  text-align: center;
-}
-
 .family-name {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 800;
-  color: var(--text-primary);
 }
 
 .family-relation {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: var(--accent-pink);
   font-weight: 600;
-  text-transform: capitalize;
 }
 
-.audio-hint-badge {
-  font-size: 0.8rem;
-  background: rgba(236, 72, 153, 0.15);
-  color: var(--accent-pink);
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  margin-top: 4px;
-}
-
-/* Reminders List */
 .reminders-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .reminder-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 18px 20px;
+  padding: 14px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .reminder-time-badge {
   background-color: rgba(245, 158, 11, 0.2);
   color: var(--accent-amber);
-  padding: 8px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-sm);
   font-weight: 800;
-  font-size: 1.1rem;
 }
 
 .reminder-text {
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
   flex-grow: 1;
 }
 
 /* ==========================================================================
-   CAREGIVER DASHBOARD (Matching User Mockup 2)
+   CAREGIVER DASHBOARD
    ========================================================================== */
 .caregiver-dashboard {
   background: var(--bg-glass);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 24px;
+  padding: 20px;
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
 }
 
 .caregiver-header {
@@ -914,23 +829,22 @@ h1, h2, h3, h4 {
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 16px;
+  padding-bottom: 14px;
 }
 
 .caregiver-badge {
   background: var(--accent-purple);
   color: #fff;
-  padding: 6px 14px;
+  padding: 6px 12px;
   border-radius: var(--radius-full);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
 }
 
-/* Mockup 2 Metrics Cards Grid */
 .caregiver-metrics-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 12px;
 }
 
 @media (max-width: 600px) {
@@ -943,40 +857,38 @@ h1, h2, h3, h4 {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 20px 16px;
+  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .metric-card-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .metric-value {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 800;
-  color: var(--text-primary);
 }
 
 .metric-sub {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--accent-green);
 }
 
-/* Cognitive Activity Section (Mockup 2) */
 .chart-container-card {
   background-color: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .chart-header {
@@ -987,25 +899,25 @@ h1, h2, h3, h4 {
 
 .chart-canvas {
   width: 100%;
-  height: 220px;
+  height: 200px;
 }
 
-/* Caregiver Management Tabs */
 .tab-navigation {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   border-bottom: 1px solid var(--border-color);
-  padding-bottom: 8px;
+  padding-bottom: 6px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tab-btn {
   background: transparent;
   border: none;
   color: var(--text-secondary);
-  padding: 10px 16px;
+  padding: 8px 14px;
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -1017,19 +929,16 @@ h1, h2, h3, h4 {
   color: #fff;
 }
 
-/* CELEBRATION MODAL */
+/* Modals */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   z-index: 1000;
 }
 
@@ -1041,38 +950,32 @@ h1, h2, h3, h4 {
   background: var(--bg-card);
   border: 2px solid var(--accent-purple);
   border-radius: var(--radius-lg);
-  padding: 32px 24px;
-  max-width: 460px;
+  padding: 28px 20px;
+  max-width: 440px;
   width: 100%;
   text-align: center;
   box-shadow: var(--shadow-glow);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes modalPop {
-  0% { transform: scale(0.7); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  gap: 14px;
 }
 
 .confetti-icon {
-  font-size: 3rem;
+  font-size: 2.8rem;
 }
 
 .modal-stats {
   display: flex;
-  gap: 12px;
-  margin: 12px 0;
+  gap: 10px;
+  margin: 8px 0;
 }
 
 .modal-stat-pill {
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  padding: 8px 16px;
+  padding: 6px 14px;
   border-radius: var(--radius-full);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
 }
