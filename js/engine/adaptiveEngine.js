@@ -12,13 +12,22 @@ const AdaptiveEngine = {
   async checkDailyReset() {
     const activePatient = await PatientDataService.getActivePatient();
     if (!activePatient) return;
+    return this.checkDailyResetForPatient(activePatient.patientId);
+  },
+
+  /**
+   * Per-patient daily calendar date reset check
+   */
+  async checkDailyResetForPatient(patientId) {
+    const patient = PatientDataService.patients[patientId];
+    if (!patient) return null;
 
     const today = new Date().toISOString().split('T')[0];
-    if (activePatient.lastSessionDate !== today) {
-      activePatient.lastSessionDate = today;
-      activePatient.todayGamesCompleted = 0;
-      
-      const g = activePatient.gamesState;
+    if (patient.lastSessionDate !== today) {
+      patient.lastSessionDate = today;
+      patient.todayGamesCompleted = 0;
+
+      const g = patient.gamesState;
       if (g) {
         g.game1.unlocked = true;  g.game1.completed = false;
         g.game2.unlocked = false; g.game2.completed = false;
@@ -26,13 +35,10 @@ const AdaptiveEngine = {
         g.game4.unlocked = false; g.game4.completed = false;
         g.game5.unlocked = false; g.game5.completed = false;
       }
-      
-      await PatientDataService.updateActivePatient({
-        lastSessionDate: today,
-        todayGamesCompleted: 0,
-        gamesState: g
-      });
+
+      PatientDataService.save();
     }
+    return patient;
   },
 
   getPatient() {
