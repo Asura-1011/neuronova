@@ -1,15 +1,17 @@
 /**
  * Game 3: Picture Recall
- * Dementia Patient Cognitive Training
+ * Level difficulty scaling via GameDifficultyService
  */
 
 const PictureRecallGame = {
-  allPictures: ['🍎', '🐶', '🚗', '🌻', '🏠', '📱', '✈️', '🎸', '👑', '🌈'],
+  allPictures: ['🍎', '🐶', '🚗', '🌻', '🏠', '📱', '✈️', '🎸', '👑', '🌈', '🚲', '🏀'],
   targetPictures: [],
   options: [],
   score: 0,
   roundsCompleted: 0,
   maxRounds: 3,
+  itemCount: 3,
+  previewTimeMs: 5000,
   startTime: null,
   onCompleteCallback: null,
 
@@ -19,7 +21,12 @@ const PictureRecallGame = {
     this.roundsCompleted = 0;
     this.startTime = Date.now();
 
-    VoiceAssistant.speak("Picture Recall. Memorize the pictures shown on screen, then identify which picture you saw!");
+    const patient = AdaptiveEngine.getPatient();
+    const diff = GameDifficultyService.getDifficultyForGame('game3', patient.level);
+    this.itemCount = diff.itemCount || 3;
+    this.previewTimeMs = diff.previewTimeMs || 5000;
+
+    VoiceAssistant.speak("Picture Recall. Memorize the pictures shown on screen, then identify which picture you saw!", "game_start");
 
     container.innerHTML = `
       <div class="game-container">
@@ -36,7 +43,7 @@ const PictureRecallGame = {
         </div>
 
         <div class="game-instruction-banner" id="pic-banner">
-          <span>Memorize these pictures! (5 seconds)</span>
+          <span>Memorize these pictures! (${Math.round(this.previewTimeMs/1000)} seconds)</span>
           <button class="speak-btn" onclick="VoiceAssistant.speak('Memorize these pictures quickly.')">🔊</button>
         </div>
 
@@ -54,16 +61,15 @@ const PictureRecallGame = {
   },
 
   startRound() {
-    // Pick 3 random target pictures
     const shuffled = [...this.allPictures].sort(() => Math.random() - 0.5);
-    this.targetPictures = shuffled.slice(0, 3);
+    this.targetPictures = shuffled.slice(0, this.itemCount);
 
     const displayArea = document.getElementById('pic-display');
     const choiceGrid = document.getElementById('pic-choices');
     const banner = document.getElementById('pic-banner');
 
     if (choiceGrid) choiceGrid.classList.add('hidden');
-    if (banner) banner.querySelector('span').innerText = 'Memorize these 3 pictures! (5 seconds)';
+    if (banner) banner.querySelector('span').innerText = `Memorize these ${this.itemCount} pictures! (${Math.round(this.previewTimeMs/1000)} seconds)`;
 
     if (displayArea) {
       displayArea.innerHTML = this.targetPictures.map(pic => `
@@ -73,20 +79,18 @@ const PictureRecallGame = {
 
     VoiceAssistant.speak("Look closely and memorize these items.");
 
-    // Hide pictures after 5 seconds
     setTimeout(() => {
       if (displayArea) displayArea.innerHTML = '<div style="font-size:3rem; padding:20px;">❓ ❓ ❓</div>';
       if (banner) banner.querySelector('span').innerText = 'Which of these pictures was shown above?';
       
       this.showChoices();
-    }, 5000);
+    }, this.previewTimeMs);
   },
 
   showChoices() {
     const choiceGrid = document.getElementById('pic-choices');
     if (!choiceGrid) return;
 
-    // Pick 1 correct picture from targets and 2 distractor pictures
     const correctPic = this.targetPictures[Math.floor(Math.random() * this.targetPictures.length)];
     const distractors = this.allPictures.filter(p => !this.targetPictures.includes(p)).sort(() => Math.random() - 0.5).slice(0, 2);
     
@@ -107,7 +111,7 @@ const PictureRecallGame = {
       document.getElementById('pic-score').innerText = this.score;
       document.getElementById('pic-round').innerText = `${Math.min(3, this.roundsCompleted + 1)} / 3`;
 
-      VoiceAssistant.speak("Correct! Outstanding memory!");
+      VoiceAssistant.speak("Correct! Outstanding memory!", "success");
 
       if (this.roundsCompleted >= this.maxRounds) {
         this.finishGame(100);
@@ -115,7 +119,7 @@ const PictureRecallGame = {
         setTimeout(() => this.startRound(), 1200);
       }
     } else {
-      VoiceAssistant.speak("Not quite! Good try.");
+      VoiceAssistant.speak("Not quite! Good try.", "mistake");
       this.roundsCompleted++;
       if (this.roundsCompleted >= this.maxRounds) {
         this.finishGame(75);
@@ -127,7 +131,7 @@ const PictureRecallGame = {
 
   finishGame(accuracy) {
     const timeTaken = Math.round((Date.now() - this.startTime) / 1000);
-    VoiceAssistant.speak("Picture Recall session finished!");
+    VoiceAssistant.speak("Picture Recall session finished!", "success");
 
     setTimeout(() => {
       if (this.onCompleteCallback) {
