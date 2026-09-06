@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NeuroNova - Dementia Memory Care & Cognitive Training</title>
+  
+  <!-- Google Fonts: Outfit for bold headings, Inter for clear readable body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- App Main Root Container -->
+  <div id="app" class="app-container">
+    <!-- Dynamic view loaded here via JS -->
+  </div>
+
+  <!-- Level Up Celebration Modal -->
+  <div id="level-up-modal" class="modal-overlay hidden">
+    <div class="modal-card celebration-card">
+      <div class="confetti-icon">🎉 🌟 🎉</div>
+      <h2 id="modal-title">Congratulations!</h2>
+      <p id="modal-desc">You performed amazingly! You have advanced to Level 2!</p>
+      <div class="modal-stats" id="modal-stats-container">
+        <!-- Stat badges injected dynamically -->
+      </div>
+      <button id="modal-close-btn" class="btn btn-primary btn-large">Continue Daily Journey 🚀</button>
+    </div>
+  </div>
+
+  <!-- Application Modules -->
+  <script src="js/engine/voiceAssistant.js"></script>
+  <script src="js/engine/adaptiveEngine.js"></script>
+  <script src="js/games/memoryMatch.js"></script>
+  <script src="js/games/sequenceRecall.js"></script>
+  <script src="js/games/pictureRecall.js"></script>
+  <script src="js/games/patternMemory.js"></script>
+  <script src="js/games/whatChanged.js"></script>
+  <script src="js/patient/patientDashboard.js"></script>
+  <script src="js/patient/gameMenu.js"></script>
+  <script src="js/patient/memoriesView.js"></script>
+  <script src="js/patient/remindersView.js"></script>
+  <script src="js/patient/routineView.js"></script>
+  <script src="js/caregiver/chartRenderer.js"></script>
+  <script src="js/caregiver/caregiverDashboard.js"></script>
+  <script src="js/caregiver/memoryManager.js"></script>
+  <script src="js/caregiver/reminderManager.js"></script>
+  <script src="js/caregiver/settingsManager.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
