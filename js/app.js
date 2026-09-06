@@ -1,6 +1,7 @@
 /**
  * NeuroNova Main Router & Enforced Navigation System
  * Flow: Step 1 (Initial Welcome) -> Step 2 (Caregiver PIN) -> Step 3 (Patient Manager) -> Step 5 (Patient Mode)
+ * Includes Safe Patient Deletion with Confirmation Modals & Active/Last Patient Safety logic.
  */
 
 const App = {
@@ -97,7 +98,7 @@ const App = {
 
   /**
    * STEP 3 — PATIENT MANAGEMENT SCREEN
-   * Large, mobile-friendly patient cards (No dropdowns).
+   * Large, mobile-friendly patient cards with Delete options.
    * Accessible ONLY after caregiver login.
    */
   async renderPatientManagement() {
@@ -127,70 +128,134 @@ const App = {
 
         <div class="greeting-section">
           <h1 class="greeting-title">Welcome, ${caregiverName} 👋</h1>
-          <p class="greeting-subtitle">Select a patient below to launch their cognitive session, or create a new profile.</p>
+          <p class="greeting-subtitle">Select a patient below to launch their cognitive session, or manage patient profiles below.</p>
         </div>
 
         <!-- Section Action Header -->
         <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin:4px 0;">
-          <h2 style="font-size:1.35rem;">Patients List</h2>
+          <h2 style="font-size:1.35rem;">Patients List (${allPatients.length})</h2>
           <div style="display:flex; gap:10px;">
             <button class="btn btn-secondary" style="padding:8px 14px; font-size:0.9rem;" onclick="App.showAddPatientModal()">+ Add New Patient</button>
-            <button class="btn btn-primary" style="padding:8px 14px; font-size:0.9rem;" onclick="CaregiverDashboard.render(document.getElementById('app'))">Analytics Dashboard 📊</button>
+            ${allPatients.length > 0 ? `
+              <button class="btn btn-primary" style="padding:8px 14px; font-size:0.9rem;" onclick="CaregiverDashboard.render(document.getElementById('app'))">Analytics Dashboard 📊</button>
+            ` : ''}
           </div>
         </div>
 
-        <!-- STEP 3 & STEP 8: Large Mobile-Friendly Patient Cards (Deduplicated) -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
-          ${allPatients.map(p => `
-            <div class="action-card" style="align-items:flex-start; text-align:left; padding:20px; gap:12px; cursor:default; min-height:auto;">
-              <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                  <span style="font-size:2rem;">👤</span>
-                  <div>
-                    <h3 style="font-size:1.4rem; font-weight:800;">${p.patientName}</h3>
-                    <div style="font-size:0.85rem; color:var(--text-secondary);">Age: ${p.age ? `${p.age} years` : 'Not set'}</div>
+        <!-- Empty State Handling (Last Patient Safety - Part 6) -->
+        ${allPatients.length === 0 ? `
+          <div style="background:var(--bg-card); border:2px dashed var(--border-color); border-radius:var(--radius-lg); padding:40px 20px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:16px; margin:20px 0;">
+            <div style="font-size:3rem;">👤❓</div>
+            <h3 style="font-size:1.5rem;">No patient profiles available.</h3>
+            <p style="color:var(--text-secondary); max-width:400px;">There are currently no patient profiles in the system. Click below to create a new profile.</p>
+            <button class="btn btn-primary btn-large" style="max-width:320px;" onclick="App.showAddPatientModal()">
+              ➕ Create New Patient
+            </button>
+          </div>
+        ` : `
+          <!-- Large Mobile-Friendly Patient Cards -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px;">
+            ${allPatients.map(p => `
+              <div class="action-card" style="align-items:flex-start; text-align:left; padding:20px; gap:12px; cursor:default; min-height:auto;">
+                <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                  <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:2rem;">👤</span>
+                    <div>
+                      <h3 style="font-size:1.4rem; font-weight:800;">${p.patientName}</h3>
+                      <div style="font-size:0.85rem; color:var(--text-secondary);">Age: ${p.age ? `${p.age} years` : 'Not set'}</div>
+                    </div>
                   </div>
+                  <span class="status-badge unlocked" style="font-size:0.75rem;">Level ${p.currentLevel || 1}</span>
                 </div>
-                <span class="status-badge unlocked" style="font-size:0.75rem;">Level ${p.currentLevel || 1}</span>
-              </div>
 
-              <div style="background:var(--bg-primary); padding:10px 14px; border-radius:var(--radius-sm); width:100%; font-size:0.9rem; border:1px solid var(--border-color);">
-                <div style="font-weight:700; color:var(--accent-amber);">${BaselineService.getBaselineStatusText(p)}</div>
-                <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">ID: ${p.patientId}</div>
-              </div>
+                <div style="background:var(--bg-primary); padding:10px 14px; border-radius:var(--radius-sm); width:100%; font-size:0.9rem; border:1px solid var(--border-color);">
+                  <div style="font-weight:700; color:var(--accent-amber);">${BaselineService.getBaselineStatusText(p)}</div>
+                  <div style="font-size:0.8rem; color:var(--text-secondary); margin-top:2px;">ID: ${p.patientId}</div>
+                </div>
 
-              <!-- STEP 5: Select & Start Session -->
-              <button class="btn btn-primary btn-large" style="width:100%; margin-top:4px;" onclick="App.selectPatientAndLaunch('${p.patientId}')">
-                Select & Start Session 🎮
-              </button>
-            </div>
-          `).join('')}
+                <!-- Primary Action: Select & Start Session -->
+                <button class="btn btn-primary btn-large" style="width:100%; margin-top:4px;" onclick="App.selectPatientAndLaunch('${p.patientId}')">
+                  Select & Start Session 🎮
+                </button>
+
+                <!-- Destructive Action: Delete Patient Profile (Caregiver Only) -->
+                <button class="btn btn-danger" style="width:100%; padding:10px; font-size:0.9rem; min-height:44px;" onclick="App.showDeleteConfirmationModal('${p.patientId}', '${p.patientName.replace(/'/g, "\\'")}')">
+                  🗑️ Delete Patient Profile
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+
+      <!-- Delete Confirmation Modal (Part 2) -->
+      <div id="delete-patient-modal" class="modal-overlay hidden">
+        <div class="modal-card" style="border-color:#ef4444;">
+          <div class="confetti-icon" style="font-size:2.8rem;">⚠️</div>
+          <h2 style="color:#ef4444;">Delete Patient Profile?</h2>
+          <p id="delete-modal-msg" style="color:var(--text-primary); font-size:1rem; line-height:1.5;">
+            Are you sure you want to delete this patient? This will permanently delete all of their progress, game history, baseline assessment, reminders, and memories.
+          </p>
+          <div style="display:flex; flex-direction:column; gap:10px; width:100%; margin-top:12px;">
+            <button id="confirm-delete-btn" class="btn btn-danger btn-large">Delete Permanently 🗑️</button>
+            <button onclick="App.hideDeleteConfirmationModal()" class="btn btn-secondary btn-large">Cancel</button>
+          </div>
         </div>
       </div>
     `;
   },
 
   /**
+   * Shows confirmation dialog for patient deletion (Part 2)
+   */
+  showDeleteConfirmationModal(patientId, patientName) {
+    const modal = document.getElementById('delete-patient-modal');
+    const msg = document.getElementById('delete-modal-msg');
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+
+    if (msg) {
+      msg.innerHTML = `Are you sure you want to delete <strong>${patientName}</strong>? This will permanently delete all of their progress, game history, baseline assessment, reminders, and memories.`;
+    }
+
+    if (confirmBtn) {
+      confirmBtn.onclick = async () => {
+        App.hideDeleteConfirmationModal();
+        await App.performDeletePatient(patientId);
+      };
+    }
+
+    if (modal) modal.classList.remove('hidden');
+  },
+
+  hideDeleteConfirmationModal() {
+    const modal = document.getElementById('delete-patient-modal');
+    if (modal) modal.classList.add('hidden');
+  },
+
+  /**
+   * Executes deletion using unique patientId (Part 3 & Part 5)
+   */
+  async performDeletePatient(patientId) {
+    const res = await PatientDataService.deletePatient(patientId);
+    if (res.success) {
+      alert(`Patient "${res.patientName}" deleted successfully.`);
+      this.renderPatientManagement();
+    } else {
+      alert(`Failed to delete patient: ${res.message}`);
+    }
+  },
+
+  /**
    * STEP 5 — START PATIENT SESSION
-   * 1. Calls setActivePatient(patientId)
-   * 2. Loads isolated patient data
-   * 3. Locks caregiver session
-   * 4. Enters simplified Patient Mode
    */
   async selectPatientAndLaunch(patientId) {
-    // 1 & 2. Set active patient and load isolated data
     await PatientDataService.setActivePatient(patientId);
-
-    // 3 & 4. Lock caregiver session before handing phone to elderly user
     CaregiverAuthService.logout();
-
-    // 5. Render Patient Mode (Step 6)
     PatientDashboard.render(document.getElementById('app'));
   },
 
   /**
    * STEP 4 — ADD NEW PATIENT
-   * Collects Name, Age, Profile Info; generates UNIQUE patient ID.
    */
   async showAddPatientModal() {
     const name = prompt('Enter Patient Name (e.g. Ravi or Shaik):');
@@ -208,10 +273,6 @@ const App = {
     this.renderLanding();
   },
 
-  /**
-   * STEP 7 — RETURN TO CAREGIVER MODE
-   * Triggered when elderly patient or caregiver taps 🔒 Caregiver Access
-   */
   openCaregiverLoginModal() {
     this.openCaregiverLogin();
   }
