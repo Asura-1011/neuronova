@@ -1,6 +1,6 @@
 /**
  * Game 4: Pattern Memory
- * Dementia Patient Cognitive Training
+ * Level difficulty scaling via GameDifficultyService
  */
 
 const PatternMemoryGame = {
@@ -9,6 +9,8 @@ const PatternMemoryGame = {
   score: 0,
   roundsCompleted: 0,
   maxRounds: 3,
+  tilesCount: 3,
+  previewTimeMs: 3000,
   startTime: null,
   isShowingPattern: false,
   onCompleteCallback: null,
@@ -19,7 +21,12 @@ const PatternMemoryGame = {
     this.roundsCompleted = 0;
     this.startTime = Date.now();
 
-    VoiceAssistant.speak("Pattern Memory. Memorize which tiles light up on the grid, then select them!");
+    const patient = AdaptiveEngine.getPatient();
+    const diff = GameDifficultyService.getDifficultyForGame('game4', patient.level);
+    this.tilesCount = diff.tilesCount || 3;
+    this.previewTimeMs = diff.previewTimeMs || 3000;
+
+    VoiceAssistant.speak("Pattern Memory. Memorize which tiles light up on the grid, then select them!", "game_start");
 
     container.innerHTML = `
       <div class="game-container">
@@ -55,20 +62,17 @@ const PatternMemoryGame = {
     this.userSelected = [];
     this.isShowingPattern = true;
 
-    // Clear grid UI
     for (let i = 0; i < 9; i++) {
       const tile = document.getElementById(`tile-${i}`);
       if (tile) tile.className = 'pattern-tile';
     }
 
-    // Select 3 random tiles out of 9
     const tiles = [0, 1, 2, 3, 4, 5, 6, 7, 8].sort(() => Math.random() - 0.5);
-    this.patternTiles = tiles.slice(0, 3);
+    this.patternTiles = tiles.slice(0, this.tilesCount);
 
     const banner = document.getElementById('pat-banner');
     if (banner) banner.querySelector('span').innerText = 'Watch carefully! Memorize the glowing tiles.';
 
-    // Highlight tiles for 3 seconds
     this.patternTiles.forEach(idx => {
       const tile = document.getElementById(`tile-${idx}`);
       if (tile) tile.classList.add('highlighted');
@@ -77,16 +81,15 @@ const PatternMemoryGame = {
     VoiceAssistant.speak("Remember the location of these glowing tiles.");
 
     setTimeout(() => {
-      // Hide highlight
       this.patternTiles.forEach(idx => {
         const tile = document.getElementById(`tile-${idx}`);
         if (tile) tile.classList.remove('highlighted');
       });
 
       this.isShowingPattern = false;
-      if (banner) banner.querySelector('span').innerText = 'Now tap the 3 tiles that were glowing!';
-      VoiceAssistant.speak("Now tap the 3 tiles that were highlighted.");
-    }, 3000);
+      if (banner) banner.querySelector('span').innerText = `Now tap the ${this.tilesCount} tiles that were glowing!`;
+      VoiceAssistant.speak(`Now tap the ${this.tilesCount} tiles that were highlighted.`);
+    }, this.previewTimeMs);
   },
 
   handleTileClick(idx) {
@@ -96,8 +99,7 @@ const PatternMemoryGame = {
     const tile = document.getElementById(`tile-${idx}`);
     if (tile) tile.classList.add('selected');
 
-    if (this.userSelected.length === 3) {
-      // Check pattern match
+    if (this.userSelected.length === this.tilesCount) {
       const isCorrect = this.patternTiles.every(t => this.userSelected.includes(t));
 
       if (isCorrect) {
@@ -106,7 +108,7 @@ const PatternMemoryGame = {
         document.getElementById('pat-score').innerText = this.score;
         document.getElementById('pat-round').innerText = `${Math.min(3, this.roundsCompleted + 1)} / 3`;
 
-        VoiceAssistant.speak("Perfect memory! Pattern matched!");
+        VoiceAssistant.speak("Perfect memory! Pattern matched!", "success");
 
         if (this.roundsCompleted >= this.maxRounds) {
           this.finishGame(100);
@@ -114,7 +116,7 @@ const PatternMemoryGame = {
           setTimeout(() => this.startRound(), 1200);
         }
       } else {
-        VoiceAssistant.speak("Good effort! Let's try the next pattern.");
+        VoiceAssistant.speak("Good effort! Let's try the next pattern.", "mistake");
         this.roundsCompleted++;
         if (this.roundsCompleted >= this.maxRounds) {
           this.finishGame(70);
@@ -127,7 +129,7 @@ const PatternMemoryGame = {
 
   finishGame(accuracy) {
     const timeTaken = Math.round((Date.now() - this.startTime) / 1000);
-    VoiceAssistant.speak("Pattern Memory game complete!");
+    VoiceAssistant.speak("Pattern Memory game complete!", "success");
 
     setTimeout(() => {
       if (this.onCompleteCallback) {
