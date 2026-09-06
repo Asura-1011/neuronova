@@ -1,7 +1,7 @@
 /**
- * NeuroNova Main Router & Navigation System
+ * NeuroNova Main Router & Enforced Navigation System
  * Flow: Step 1 (Welcome) -> Step 2 (Caregiver PIN) -> Step 3 (Patient Manager) -> Step 5 (Patient Mode)
- * Features Patient Cards with visible "🗑️ Delete Patient" buttons & safe deletion modals.
+ * Includes Safe Patient Deletion & Daily Completion Verification Guard.
  */
 
 const App = {
@@ -95,11 +95,6 @@ const App = {
 
   /**
    * STEP 3 — PATIENT MANAGEMENT SCREEN
-   * Large, mobile-friendly patient cards displaying:
-   * 1. Patient Name & Age
-   * 2. Level & Baseline Status
-   * 3. Select & Start Session 🎮 button
-   * 4. 🗑️ Delete Patient button (Destructive red style)
    */
   async renderPatientManagement() {
     if (!CaregiverAuthService.isAuthenticated()) {
@@ -142,7 +137,7 @@ const App = {
           </div>
         </div>
 
-        <!-- Empty State Handling (Last Patient Safety) -->
+        <!-- Empty State Handling -->
         ${allPatients.length === 0 ? `
           <div style="background:var(--bg-card); border:2px dashed var(--border-color); border-radius:var(--radius-lg); padding:40px 20px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:16px; margin:20px 0;">
             <div style="font-size:3rem;">👤❓</div>
@@ -209,9 +204,6 @@ const App = {
     `;
   },
 
-  /**
-   * Shows confirmation dialog for patient deletion
-   */
   showDeleteConfirmationModal(patientId, patientName) {
     const modal = document.getElementById('delete-patient-modal');
     const msg = document.getElementById('delete-modal-msg');
@@ -236,13 +228,9 @@ const App = {
     if (modal) modal.classList.add('hidden');
   },
 
-  /**
-   * Executes deletion using unique patientId
-   */
   async performDeletePatient(patientId) {
     const res = await PatientDataService.deletePatient(patientId);
     if (res.success) {
-      // Re-render Patient Management screen immediately
       this.renderPatientManagement();
     } else {
       alert(`Failed to delete patient: ${res.message}`);
@@ -251,16 +239,32 @@ const App = {
 
   /**
    * STEP 5 — START PATIENT SESSION
+   * Enforces Case 1 (Tasks Not Completed) vs Case 2 (Daily Task Completed Guard)
    */
   async selectPatientAndLaunch(patientId) {
+    // 1. Set active patient and load isolated data
     await PatientDataService.setActivePatient(patientId);
+
+    // 2. Perform per-patient date reset check
+    const patientObj = await AdaptiveEngine.checkDailyResetForPatient(patientId);
+
+    // 3. Lock caregiver session before handing phone to patient
     CaregiverAuthService.logout();
+
+    // 4. Check if today's daily activities (5 games) are ALREADY completed for today
+    const DAILY_GAME_TARGET = 5;
+    if (patientObj && (patientObj.todayGamesCompleted || 0) >= DAILY_GAME_TARGET) {
+      // CASE 2 — DAILY TASK ALREADY COMPLETED
+      // Render completion screen & speak completion audio ONLY once
+      PatientDashboard.renderDailyCompletion(document.getElementById('app'), patientObj);
+      return;
+    }
+
+    // CASE 1 — DAILY TASK NOT COMPLETED
+    // Launch normal Patient Dashboard & start normal welcome voice assistant
     PatientDashboard.render(document.getElementById('app'));
   },
 
-  /**
-   * STEP 4 — ADD NEW PATIENT
-   */
   async showAddPatientModal() {
     const name = prompt('Enter Patient Name (e.g. Ravi or Shaik):');
     if (!name || !name.trim()) return;
