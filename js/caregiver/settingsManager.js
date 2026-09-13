@@ -1,6 +1,6 @@
 /**
  * SettingsManager Component (Caregiver side)
- * Security PIN settings, Demo Mode toggle, Baseline Target, and Grok Voice API configuration.
+ * Security PIN settings, Demo Mode toggle, Baseline Target, and ElevenLabs TTS configuration.
  */
 
 const SettingsManager = {
@@ -10,7 +10,7 @@ const SettingsManager = {
 
     container.innerHTML = `
       <div style="display:flex; flex-direction:column; gap:20px;">
-        <!-- Demo Mode Section (Part 7) -->
+        <!-- Demo Mode Section -->
         <div style="background:linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(139, 92, 246, 0.15)); padding:20px; border-radius:var(--radius-md); border:2px dashed var(--accent-amber);">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
             <div>
@@ -25,7 +25,7 @@ const SettingsManager = {
           </div>
         </div>
 
-        <!-- Caregiver PIN & Security (Part 4) -->
+        <!-- Caregiver PIN & Security -->
         <div style="background:var(--bg-card); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
           <h3 style="margin-bottom:14px;">Caregiver Security & PIN Settings 🔒</h3>
           <form onsubmit="SettingsManager.handleUpdatePin(event)" style="display:flex; flex-direction:column; gap:12px;">
@@ -67,18 +67,19 @@ const SettingsManager = {
           </form>
         </div>
 
-        <!-- Voice Assistant & Grok API Preparation (Parts 12-16) -->
+        <!-- Voice Assistant & ElevenLabs Provider Settings -->
         <div style="background:var(--bg-card); padding:20px; border-radius:var(--radius-md); border:1px solid var(--border-color);">
-          <h3 style="margin-bottom:16px;">Voice Assistant & Grok Provider Settings 🌐</h3>
+          <h3 style="margin-bottom:16px;">Voice Assistant & ElevenLabs Settings 🌐</h3>
           <div style="display:flex; flex-direction:column; gap:14px;">
             <div class="form-group">
               <label>Select Voice Provider Architecture</label>
               <select id="set-voice-provider" class="form-input" onchange="SettingsManager.handleProviderChange(this.value)">
                 <option value="browser" ${VoiceService.activeProvider === 'browser' ? 'selected' : ''}>Browser Native Web Speech (Fallback / Default)</option>
-                <option value="grok" ${VoiceService.activeProvider === 'grok' ? 'selected' : ''}>Grok / xAI Voice API (Secure Backend / API Route Ready)</option>
+                <option value="grok" ${VoiceService.activeProvider === 'grok' ? 'selected' : ''}>Grok / xAI Voice API</option>
+                <option value="elevenlabs" ${VoiceService.activeProvider === 'elevenlabs' ? 'selected' : ''}>ElevenLabs Text-to-Speech (Premium Natural Voice)</option>
               </select>
               <small style="color:var(--text-secondary); margin-top:4px;">
-                Note: Grok Voice communicates only via secure backend routes (/api/voice/speech) keeping XAI_API_KEY environment variables safe!
+                Note: ElevenLabs TTS communicates securely via serverless endpoint /api/tts. ELEVENLABS_API_KEY is never exposed to the client!
               </small>
             </div>
 
@@ -94,9 +95,9 @@ const SettingsManager = {
             <div class="form-group">
               <label>Select Assistant Language</label>
               <select id="set-language" class="form-input" onchange="SettingsManager.handleLanguageChange(this.value)">
-                <option value="en-US" ${VoiceService.settings.language === 'en-US' ? 'selected' : ''}>English (US)</option>
-                <option value="hi-IN" ${VoiceService.settings.language === 'hi-IN' ? 'selected' : ''}>Hindi (हिन्दी)</option>
-                <option value="ta-IN" ${VoiceService.settings.language === 'ta-IN' ? 'selected' : ''}>Tamil (தமிழ்)</option>
+                <option value="en-US" ${VoiceService.settings.language === 'en-US' ? 'selected' : ''}>English (US) - [Voice ID: G4Wh6MqJNTzYtuAeMqv5]</option>
+                <option value="hi-IN" ${VoiceService.settings.language === 'hi-IN' ? 'selected' : ''}>Hindi (हिन्दी) - [Voice ID: iWNf11sz1GrUE4ppxTOL]</option>
+                <option value="ta-IN" ${VoiceService.settings.language === 'ta-IN' ? 'selected' : ''}>Tamil (தமிழ்) - [Voice ID: gqFUMFHCD2nbbcYVtPGB]</option>
                 <option value="es-ES" ${VoiceService.settings.language === 'es-ES' ? 'selected' : ''}>Spanish (Español)</option>
                 <option value="fr-FR" ${VoiceService.settings.language === 'fr-FR' ? 'selected' : ''}>French (Français)</option>
               </select>
@@ -143,7 +144,8 @@ const SettingsManager = {
 
   handleProviderChange(val) {
     VoiceService.setProvider(val);
-    alert(val === 'grok' ? 'Grok Voice Provider selected. Calls will route via /api/voice/speech with automatic browser fallback.' : 'Browser Native Speech selected.');
+    const label = val === 'elevenlabs' ? 'ElevenLabs Text-to-Speech (Premium Natural Voice)' : (val === 'grok' ? 'Grok / xAI Voice API' : 'Browser Native Web Speech');
+    alert(`${label} selected.`);
   },
 
   handleLanguageChange(lang) {

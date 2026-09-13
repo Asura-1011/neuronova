@@ -1,11 +1,11 @@
 /**
- * NeuroNova VoiceService (Parts 12, 13, 14, 15, 16)
+ * NeuroNova VoiceService
  * Provider Pattern Architecture for Text-to-Speech
- * Supports BrowserVoiceProvider (fallback) & GrokVoiceProvider (Backend API route ready)
+ * Supports ElevenLabsVoiceProvider (Vercel Serverless API), GrokVoiceProvider & BrowserVoiceProvider
  * NO API keys in client code!
  */
 
-// Provider 1: Browser Native Web Speech API
+// Provider 1: Browser Native Web Speech API (Fallback)
 const BrowserVoiceProvider = {
   name: 'browser',
 
@@ -40,10 +40,9 @@ const BrowserVoiceProvider = {
 };
 
 // Provider 2: Grok / xAI Voice API Prepared Provider
-// Communicates ONLY with secure backend route (/api/voice/speech), keeping secrets safe!
 const GrokVoiceProvider = {
   name: 'grok',
-  backendApiEndpoint: '/api/voice/speech', // Secure backend API endpoint
+  backendApiEndpoint: '/api/voice/speech',
 
   async speak(text, settings) {
     try {
@@ -69,7 +68,6 @@ const GrokVoiceProvider = {
       return true;
     } catch (err) {
       console.warn('GrokVoiceProvider unavailable, falling back to BrowserVoiceProvider:', err);
-      // Fallback seamlessly to Browser Voice
       return BrowserVoiceProvider.speak(text, settings);
     }
   },
@@ -79,9 +77,86 @@ const GrokVoiceProvider = {
   }
 };
 
+// Provider 3: ElevenLabs High Quality Multilingual Text-to-Speech
+// Calls secure serverless API endpoint (/api/tts) which accesses ELEVENLABS_API_KEY.
+// Enforces Credit Saving Rules (In-memory Blob Cache & Audio Stop Guard).
+const ElevenLabsVoiceProvider = {
+  name: 'elevenlabs',
+  backendApiEndpoint: '/api/tts',
+  currentAudio: null,
+  audioCache: new Map(), // In-memory audio cache: key = language:text -> blobUrl
+
+  async speak(text, settings) {
+    if (!text || !text.trim()) return true;
+
+    const trimmedText = text.trim();
+    const lang = settings.language || 'en-US';
+    const cacheKey = `${lang}:${trimmedText}`;
+
+    // CREDIT SAVING RULE 1: Stop any currently playing audio before starting new audio
+    this.stop();
+
+    // CREDIT SAVING RULE 2: Check in-memory audio blob cache to avoid duplicate API calls
+    if (this.audioCache.has(cacheKey)) {
+      console.log('[ElevenLabsVoiceProvider] Using cached speech audio for key:', cacheKey);
+      const cachedUrl = this.audioCache.get(cacheKey);
+      this.playAudioUrl(cachedUrl);
+      return true;
+    }
+
+    try {
+      console.log('[ElevenLabsVoiceProvider] Requesting TTS audio from secure backend endpoint /api/tts...');
+      const response = await fetch(this.backendApiEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: trimmedText,
+          language: lang
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server API endpoint returned status ${response.status}`);
+      }
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+
+      // Cache audio blob URL for future credit-saving reuse during current session
+      this.audioCache.set(cacheKey, audioUrl);
+
+      this.playAudioUrl(audioUrl);
+      return true;
+    } catch (err) {
+      console.warn('[ElevenLabsVoiceProvider] API request failed, falling back to BrowserVoiceProvider:', err);
+      // Seamless credit-saving fallback to browser native Web Speech API
+      return BrowserVoiceProvider.speak(text, settings);
+    }
+  },
+
+  playAudioUrl(url) {
+    this.stop();
+    this.currentAudio = new Audio(url);
+    this.currentAudio.play().catch(e => {
+      console.warn('[ElevenLabsVoiceProvider] Audio playback failed:', e);
+    });
+  },
+
+  stop() {
+    if (this.currentAudio) {
+      try {
+        this.currentAudio.pause();
+        this.currentAudio.currentTime = 0;
+      } catch (e) {}
+      this.currentAudio = null;
+    }
+    BrowserVoiceProvider.stop();
+  }
+};
+
 const VoiceService = {
   isEnabled: true,
-  activeProvider: 'browser', // 'browser' or 'grok'
+  activeProvider: 'elevenlabs', // 'elevenlabs', 'browser', or 'grok'
   settings: {
     language: 'en-US',
     rate: 0.85, // Calm pacing for elderly
@@ -93,21 +168,32 @@ const VoiceService = {
     const saved = localStorage.getItem('neuro_nova_voice_settings');
     if (saved) {
       try {
-        this.settings = { ...this.settings, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        this.settings = { ...this.settings, ...parsed };
+        if (parsed.activeProvider) {
+          this.activeProvider = parsed.activeProvider;
+        }
       } catch (e) {}
     }
   },
 
   save() {
-    localStorage.setItem('neuro_nova_voice_settings', JSON.stringify(this.settings));
+    const dataToSave = {
+      ...this.settings,
+      activeProvider: this.activeProvider
+    };
+    localStorage.setItem('neuro_nova_voice_settings', JSON.stringify(dataToSave));
   },
 
   setProvider(providerName) {
-    if (providerName === 'grok') {
+    if (providerName === 'elevenlabs') {
+      this.activeProvider = 'elevenlabs';
+    } else if (providerName === 'grok') {
       this.activeProvider = 'grok';
     } else {
       this.activeProvider = 'browser';
     }
+    this.save();
   },
 
   speak(text, context = 'general') {
@@ -125,7 +211,9 @@ const VoiceService = {
       formattedText = `That's okay. ${text}`;
     }
 
-    if (this.activeProvider === 'grok') {
+    if (this.activeProvider === 'elevenlabs') {
+      ElevenLabsVoiceProvider.speak(formattedText, this.settings);
+    } else if (this.activeProvider === 'grok') {
       GrokVoiceProvider.speak(formattedText, this.settings);
     } else {
       BrowserVoiceProvider.speak(formattedText, this.settings);
@@ -133,6 +221,8 @@ const VoiceService = {
   },
 
   stop() {
+    ElevenLabsVoiceProvider.stop();
+    GrokVoiceProvider.stop();
     BrowserVoiceProvider.stop();
   },
 
