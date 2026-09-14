@@ -77,40 +77,43 @@
     </div>
   </div>
 
-  <!-- Main Layout Wrapper (Sidebar + Main Glass Panel) -->
+  <!-- Main Layout Wrapper (Left Wellness Area + Centered Main Glass Panel) -->
   <div class="app-layout-wrapper">
-    <!-- Clean Vertical Navigation Sidebar (Matching Reference Image) -->
-    <aside class="app-sidebar" aria-label="Main Application Navigation">
-      <div class="sidebar-menu">
-        <button class="sidebar-item active" data-key="home" onclick="App.renderLanding(); App.updateSidebarActive('home')">
-          <span class="sidebar-icon">🏠</span>
-          <span class="sidebar-label">Home</span>
-        </button>
-        <button class="sidebar-item" data-key="patients" onclick="App.renderPatientManagement(); App.updateSidebarActive('patients')">
-          <span class="sidebar-icon">👥</span>
-          <span class="sidebar-label">Patients</span>
-        </button>
-        <button class="sidebar-item" data-key="sessions" onclick="App.openPatientSessionDirect(); App.updateSidebarActive('sessions')">
-          <span class="sidebar-icon">🎮</span>
-          <span class="sidebar-label">Sessions</span>
-        </button>
-        <button class="sidebar-item" data-key="chart" onclick="App.navigateToCaregiverTab('chart')">
-          <span class="sidebar-icon">📊</span>
-          <span class="sidebar-label">Analytics</span>
-        </button>
-        <button class="sidebar-item" data-key="reminders" onclick="App.navigateToCaregiverTab('reminders')">
-          <span class="sidebar-icon">🔔</span>
-          <span class="sidebar-label">Reminders</span>
-        </button>
-        <button class="sidebar-item" data-key="settings" onclick="App.navigateToCaregiverTab('settings')">
-          <span class="sidebar-icon">⚙️</span>
-          <span class="sidebar-label">Settings</span>
-        </button>
+    <!-- Calm Static Wellness & Motivation Panel (Left Side - Completely Non-Interactive) -->
+    <aside class="app-left-wellness" aria-label="Wellness & Daily Motivation">
+      <!-- Upper Section: Brand & Tagline -->
+      <div class="wellness-brand-header">
+        <div class="brand-title-wrap">
+          <span class="brand-icon">🧠</span>
+          <span class="brand-name">NeuroNova</span>
+        </div>
+        <p class="brand-tagline">"A Brighter Mind for a Healthier Tomorrow"</p>
       </div>
 
-      <div class="sidebar-footer">
-        <div class="sidebar-brand-icon">🧠</div>
-        <div class="sidebar-footer-text">A Brighter Mind for a Healthier Tomorrow</div>
+      <!-- Middle Section: Today's Thought & Gentle Messages -->
+      <div class="wellness-card">
+        <div class="wellness-card-header">
+          <span class="wellness-icon">🌿</span>
+          <span class="wellness-title">Today's Thought</span>
+        </div>
+        <p class="thought-quote">
+          "Every small step you take today helps build a brighter tomorrow."
+        </p>
+
+        <div class="gentle-messages">
+          <div class="gentle-msg-item">
+            <span class="msg-icon">☀️</span>
+            <span>Take your time.</span>
+          </div>
+          <div class="gentle-msg-item">
+            <span class="msg-icon">🌸</span>
+            <span>You're doing great today.</span>
+          </div>
+        </div>
+
+        <div class="date-badge" id="current-date-badge">
+          📅 Monday, September 14, 2026
+        </div>
       </div>
     </aside>
 
