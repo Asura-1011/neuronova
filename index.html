@@ -20,140 +20,104 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- Nature & Cognitive Wellness Ambient Background Canvas (Light Theme) -->
+  <!-- Nature & Cognitive Wellness Static Background Canvas (Matching Reference UI) -->
   <div class="bg-nature-canvas" aria-hidden="true">
-    <!-- Warm Sunlight & Soft Ambient Glows -->
-    <div class="sunlight-glow"></div>
-    <div class="bg-glow-blob blob-1"></div>
-    <div class="bg-glow-blob blob-2"></div>
-    <div class="bg-glow-blob blob-3"></div>
-
-    <!-- Soft Floating Nature Leaves -->
-    <div class="floating-leaf float-leaf-1">
-      <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 40 C10 40, 20 10, 40 10 C40 10, 30 40, 10 40 Z" fill="#10b981" fill-opacity="0.4" />
-        <path d="M10 40 Q25 25 40 10" stroke="#059669" stroke-opacity="0.45" stroke-width="1.5" />
-      </svg>
-    </div>
-    <div class="floating-leaf float-leaf-2">
-      <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M40 40 C40 40, 30 10, 10 10 C10 10, 20 40, 40 40 Z" fill="#34d399" fill-opacity="0.38" />
-        <path d="M40 40 Q25 25 10 10" stroke="#059669" stroke-opacity="0.4" stroke-width="1.5" />
-      </svg>
-    </div>
-    <div class="floating-leaf float-leaf-3">
-      <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M10 40 C10 40, 25 5, 45 15 C45 15, 25 45, 10 40 Z" fill="#818cf8" fill-opacity="0.3" />
-        <path d="M10 40 Q28 25 45 15" stroke="#6366f1" stroke-opacity="0.35" stroke-width="1.5" />
-      </svg>
-    </div>
-    <div class="floating-leaf float-leaf-4">
-      <svg viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 25 C5 25, 25 5, 40 20 C40 20, 20 40, 5 25 Z" fill="#059669" fill-opacity="0.3" />
-        <path d="M5 25 Q22 22 40 20" stroke="#047857" stroke-opacity="0.35" stroke-width="1.2" />
-      </svg>
+    <!-- Static Warm Daylight & Sky Gradient -->
+    <div class="sunlight-glow-static"></div>
+    
+    <!-- Decorative Text on Right Background (Matching Reference Image) -->
+    <div class="bg-reference-text">
+      <div class="script-quote">Small Steps<br>Brighter Days <span class="heart-icon">♡</span></div>
+      <div class="sub-quote">Better Care<br>Brighter Minds<br>Healthier Tomorrows</div>
     </div>
 
-    <!-- Organic Decorative Foliage Elements (Framing Screen Corners) -->
-    <div class="leaf-element leaf-top-left">
-      <svg viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg" class="leaf-svg">
+    <!-- Static Top & Corner Leaf Canopy (Zero Animation) -->
+    <div class="static-foliage top-foliage-canopy">
+      <svg viewBox="0 0 1440 180" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
         <defs>
-          <linearGradient id="leafGradTL1" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#10b981" stop-opacity="0.5" />
-            <stop offset="60%" stop-color="#34d399" stop-opacity="0.35" />
-            <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.15" />
+          <linearGradient id="foliageGrad1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#408034" stop-opacity="0.9" />
+            <stop offset="60%" stop-color="#559b43" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#78c265" stop-opacity="0.45" />
           </linearGradient>
-          <linearGradient id="leafGradTL2" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#059669" stop-opacity="0.45" />
-            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.2" />
-          </linearGradient>
-          <filter id="glowTL" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-        <path d="M-10 -10 C 40 50, 110 100, 200 150" stroke="#059669" stroke-opacity="0.3" stroke-width="3" fill="none" />
-        <path d="M -5 -5 C 20 40, 80 40, 95 -10 C 60 20, 20 10, -5 -5 Z" fill="url(#leafGradTL1)" filter="url(#glowTL)" />
-        <path d="M 30 20 Q 60 10 95 -10" stroke="rgba(255,255,255,0.6)" stroke-width="1.5" />
-        <path d="M 35 30 C 70 70, 145 60, 150 15 C 105 45, 65 35, 35 30 Z" fill="url(#leafGradTL2)" />
-        <path d="M 65 42 Q 110 40 150 15" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" />
-        <path d="M 75 70 C 120 120, 195 105, 210 50 C 160 90, 110 75, 75 70 Z" fill="url(#leafGradTL1)" />
-        <circle cx="120" cy="110" r="3" fill="#10b981" fill-opacity="0.6" class="sparkle-dot" />
-        <circle cx="170" cy="70" r="2" fill="#059669" fill-opacity="0.7" class="sparkle-dot" />
-        <circle cx="210" cy="130" r="4" fill="#8b5cf6" fill-opacity="0.4" class="sparkle-dot" />
-      </svg>
-    </div>
-
-    <div class="leaf-element leaf-top-right">
-      <svg viewBox="0 0 260 260" fill="none" xmlns="http://www.w3.org/2000/svg" class="leaf-svg">
-        <defs>
-          <linearGradient id="leafGradTR1" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#34d399" stop-opacity="0.5" />
-            <stop offset="70%" stop-color="#0284c7" stop-opacity="0.3" />
-            <stop offset="100%" stop-color="#10b981" stop-opacity="0.15" />
-          </linearGradient>
-          <linearGradient id="leafGradTR2" x1="100%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ec4899" stop-opacity="0.25" />
-            <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.2" />
+          <linearGradient id="foliageGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2d5e23" stop-opacity="0.85" />
+            <stop offset="100%" stop-color="#4fa13c" stop-opacity="0.65" />
           </linearGradient>
         </defs>
-        <path d="M 270 -10 C 210 50, 140 110, 50 170" stroke="#10b981" stroke-opacity="0.3" stroke-width="3" fill="none" />
-        <path d="M 265 -5 C 235 45, 175 40, 160 -15 C 195 20, 240 10, 265 -5 Z" fill="url(#leafGradTR1)" />
-        <path d="M 225 30 C 185 75, 110 65, 105 20 C 150 50, 190 38, 225 30 Z" fill="url(#leafGradTR2)" />
-        <path d="M 175 75 C 130 125, 55 115, 45 60 C 95 95, 140 82, 175 75 Z" fill="url(#leafGradTR1)" />
-        <circle cx="130" cy="120" r="3" fill="#0284c7" fill-opacity="0.5" class="sparkle-dot" />
-        <circle cx="80" cy="80" r="2.5" fill="#10b981" fill-opacity="0.6" class="sparkle-dot" />
+        <path d="M0 0 L1440 0 L1440 40 Q1300 120 1150 50 Q950 140 800 60 Q650 160 480 50 Q300 130 150 40 Q50 90 0 40 Z" fill="url(#foliageGrad1)" />
+        <path d="M100 0 Q220 110 380 30 Q520 130 680 40 Q840 120 1020 30 Q1200 110 1360 20 L1440 0 Z" fill="url(#foliageGrad2)" opacity="0.75" />
+        <path d="M 120 35 C 140 75, 180 75, 190 25 C 160 45, 130 40, 120 35 Z" fill="#4fa13c" />
+        <path d="M 280 45 C 310 90, 350 85, 365 35 C 335 60, 300 55, 280 45 Z" fill="#387a2a" />
+        <path d="M 520 40 C 550 85, 590 80, 605 30 C 575 55, 540 50, 520 40 Z" fill="#5db748" />
+        <path d="M 820 45 C 850 90, 890 85, 905 35 C 875 60, 840 55, 820 45 Z" fill="#4fa13c" />
+        <path d="M 1120 35 C 1150 80, 1190 75, 1205 25 C 1175 50, 1140 45, 1120 35 Z" fill="#387a2a" />
       </svg>
     </div>
 
-    <div class="leaf-element leaf-bottom-left">
-      <svg viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg" class="leaf-svg">
-        <defs>
-          <linearGradient id="leafGradBL1" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#10b981" stop-opacity="0.5" />
-            <stop offset="50%" stop-color="#34d399" stop-opacity="0.35" />
-            <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.1" />
-          </linearGradient>
-          <linearGradient id="leafGradBL2" x1="0%" y1="100%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3" />
-            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.25" />
-          </linearGradient>
-        </defs>
-        <path d="M -10 290 C 50 220, 120 150, 210 70" stroke="#059669" stroke-opacity="0.3" stroke-width="3.5" fill="none" />
-        <path d="M -5 285 C 30 230, 80 210, 115 155 C 80 185, 30 225, -5 285 Z" fill="url(#leafGradBL1)" />
-        <path d="M 35 240 C 85 190, 145 170, 175 110 C 130 145, 75 185, 35 240 Z" fill="url(#leafGradBL2)" />
-        <path d="M 85 190 C 140 135, 205 115, 235 55 C 185 95, 130 135, 85 190 Z" fill="url(#leafGradBL1)" />
-        <circle cx="160" cy="120" r="3.5" fill="#10b981" fill-opacity="0.6" class="sparkle-dot" />
-        <circle cx="210" cy="80" r="2.5" fill="#38bdf8" fill-opacity="0.6" class="sparkle-dot" />
+    <!-- Static Corner Leaves -->
+    <div class="static-foliage foliage-corner-left">
+      <svg viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M-20 -20 C 60 40, 140 120, 220 220" stroke="#387a2a" stroke-width="4" stroke-opacity="0.6" fill="none" />
+        <path d="M -10 -10 C 30 50, 110 50, 130 -10 C 80 25, 30 15, -10 -10 Z" fill="#408034" opacity="0.85" />
+        <path d="M 30 30 C 80 80, 160 70, 175 15 C 120 45, 75 35, 30 30 Z" fill="#559b43" opacity="0.9" />
+        <path d="M 70 70 C 120 130, 200 110, 220 50 C 160 90, 110 80, 70 70 Z" fill="#387a2a" opacity="0.8" />
       </svg>
     </div>
 
-    <div class="leaf-element leaf-bottom-right">
-      <svg viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg" class="leaf-svg">
-        <defs>
-          <linearGradient id="leafGradBR1" x1="100%" y1="100%" x2="0%" y2="0%">
-            <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.4" />
-            <stop offset="60%" stop-color="#ec4899" stop-opacity="0.2" />
-            <stop offset="100%" stop-color="#34d399" stop-opacity="0.2" />
-          </linearGradient>
-          <linearGradient id="leafGradBR2" x1="100%" y1="100%" x2="0%" y2="0%">
-            <stop offset="0%" stop-color="#059669" stop-opacity="0.45" />
-            <stop offset="100%" stop-color="#10b981" stop-opacity="0.25" />
-          </linearGradient>
-        </defs>
-        <path d="M 290 290 C 230 220, 160 150, 70 70" stroke="#8b5cf6" stroke-opacity="0.25" stroke-width="3" fill="none" />
-        <path d="M 285 285 C 240 230, 190 210, 155 155 C 190 185, 240 225, 285 285 Z" fill="url(#leafGradBR1)" />
-        <path d="M 240 240 C 190 190, 130 170, 100 110 C 145 145, 200 185, 240 240 Z" fill="url(#leafGradBR2)" />
-        <path d="M 190 190 C 135 135, 70 115, 40 55 C 90 95, 155 135, 190 190 Z" fill="url(#leafGradBR1)" />
-        <circle cx="110" cy="120" r="3" fill="#ec4899" fill-opacity="0.5" class="sparkle-dot" />
-        <circle cx="60" cy="70" r="2.5" fill="#8b5cf6" fill-opacity="0.6" class="sparkle-dot" />
+    <div class="static-foliage foliage-corner-right">
+      <svg viewBox="0 0 340 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 360 -20 C 280 100, 200 250, 150 450" stroke="#2d5e23" stroke-width="4" stroke-opacity="0.5" fill="none" />
+        <path d="M 350 -10 C 290 60, 210 60, 190 -10 C 240 25, 290 15, 350 -10 Z" fill="#408034" opacity="0.85" />
+        <path d="M 310 60 C 240 130, 150 120, 130 50 C 190 85, 250 75, 310 60 Z" fill="#559b43" opacity="0.8" />
+        <path d="M 270 140 C 200 210, 110 200, 90 130 C 150 165, 210 155, 270 140 Z" fill="#387a2a" opacity="0.85" />
+        <path d="M 230 230 C 160 300, 80 290, 60 220 C 120 255, 170 245, 230 230 Z" fill="#4fa13c" opacity="0.8" />
+        <path d="M 190 320 C 130 380, 60 370, 40 310 C 90 340, 140 335, 190 320 Z" fill="#387a2a" opacity="0.75" />
       </svg>
     </div>
   </div>
 
-  <!-- App Main Root Container -->
-  <div id="app" class="app-container">
-    <!-- Dynamic view loaded here via JS -->
+  <!-- Main Layout Wrapper (Sidebar + Main Glass Panel) -->
+  <div class="app-layout-wrapper">
+    <!-- Clean Vertical Navigation Sidebar (Matching Reference Image) -->
+    <aside class="app-sidebar" aria-label="Main Application Navigation">
+      <div class="sidebar-menu">
+        <button class="sidebar-item active" data-key="home" onclick="App.renderLanding(); App.updateSidebarActive('home')">
+          <span class="sidebar-icon">🏠</span>
+          <span class="sidebar-label">Home</span>
+        </button>
+        <button class="sidebar-item" data-key="patients" onclick="App.renderPatientManagement(); App.updateSidebarActive('patients')">
+          <span class="sidebar-icon">👥</span>
+          <span class="sidebar-label">Patients</span>
+        </button>
+        <button class="sidebar-item" data-key="sessions" onclick="App.openPatientSessionDirect(); App.updateSidebarActive('sessions')">
+          <span class="sidebar-icon">🎮</span>
+          <span class="sidebar-label">Sessions</span>
+        </button>
+        <button class="sidebar-item" data-key="chart" onclick="App.navigateToCaregiverTab('chart')">
+          <span class="sidebar-icon">📊</span>
+          <span class="sidebar-label">Analytics</span>
+        </button>
+        <button class="sidebar-item" data-key="reminders" onclick="App.navigateToCaregiverTab('reminders')">
+          <span class="sidebar-icon">🔔</span>
+          <span class="sidebar-label">Reminders</span>
+        </button>
+        <button class="sidebar-item" data-key="settings" onclick="App.navigateToCaregiverTab('settings')">
+          <span class="sidebar-icon">⚙️</span>
+          <span class="sidebar-label">Settings</span>
+        </button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-brand-icon">🧠</div>
+        <div class="sidebar-footer-text">A Brighter Mind for a Healthier Tomorrow</div>
+      </div>
+    </aside>
+
+    <!-- Main Frosted Glass Panel Container -->
+    <div id="app" class="app-container">
+      <!-- Dynamic views loaded here via JS -->
+    </div>
   </div>
 
   <!-- Level Up & Session Evaluation Celebration Modal -->
