@@ -318,94 +318,131 @@ body.high-contrast .bg-nature-canvas {
   padding: 24px 14px;
 }
 
-/* Clean Vertical Navigation Sidebar */
-.app-sidebar {
-  width: 220px;
+/* Static Left Wellness & Motivation Panel (Non-interactive design) */
+.app-left-wellness {
+  width: 280px;
   flex-shrink: 0;
-  background: rgba(253, 254, 250, 0.9);
+  background: rgba(253, 254, 250, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 26px;
-  padding: 24px 14px;
+  padding: 28px 20px;
   box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.05);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  min-height: 640px;
+  gap: 24px;
+  align-self: flex-start;
   position: sticky;
   top: 24px;
 }
 
-.sidebar-menu {
+.wellness-brand-header {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 100%;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed rgba(180, 198, 178, 0.4);
 }
 
-.sidebar-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 14px 18px;
-  border-radius: 14px;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  font-family: var(--font-heading);
-  font-size: 1.05rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-  text-align: left;
-}
-
-.sidebar-item:hover {
-  background: rgba(237, 233, 254, 0.6);
-  color: #7C5CE0;
-}
-
-.sidebar-item.active {
-  background: rgba(237, 233, 254, 0.95);
-  color: #7C5CE0;
-  box-shadow: 0 3px 10px rgba(124, 92, 224, 0.14);
-}
-
-.sidebar-icon {
-  font-size: 1.35rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sidebar-footer {
+.brand-title-wrap {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding-top: 18px;
-  border-top: 1px solid rgba(180, 198, 178, 0.35);
-  margin-top: 20px;
 }
 
-.sidebar-brand-icon {
+.brand-title-wrap .brand-icon {
   font-size: 1.8rem;
-  flex-shrink: 0;
 }
 
-.sidebar-footer-text {
-  font-size: 0.8rem;
+.brand-title-wrap .brand-name {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.wellness-brand-header .brand-tagline {
+  font-size: 0.88rem;
+  font-style: italic;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.wellness-card {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(220, 230, 215, 0.8);
+  border-radius: 18px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.wellness-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2d5e23;
+}
+
+.wellness-icon {
+  font-size: 1.2rem;
+}
+
+.thought-quote {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  font-style: italic;
+  margin: 0;
+  padding: 10px 12px;
+  background: rgba(238, 245, 235, 0.5);
+  border-left: 3px solid #559b43;
+  border-radius: 6px;
+}
+
+.gentle-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gentle-msg-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.gentle-msg-item .msg-icon {
+  font-size: 1.1rem;
+}
+
+.date-badge {
+  font-size: 0.82rem;
   font-weight: 700;
   color: var(--text-muted);
-  line-height: 1.35;
+  background: rgba(240, 244, 238, 0.7);
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 4px;
 }
 
 @media (max-width: 960px) {
-  .app-sidebar {
+  .app-left-wellness {
     display: none;
   }
 }
+
 
 /* ==========================================================================
    LANDING & PORTAL SELECTOR CARD
